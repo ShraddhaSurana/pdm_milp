@@ -1,0 +1,64 @@
+Forecast,Assay,# samples,Molecule,status,Assigned To,analyst,Available date,Due Date
+[W] AO Forecast Review 107,Polysorbate CAD,1,GS-2872,Entry In Progress,Sakshi.Gautam3,Matthew.Hentz,04/05/24,26/05/24
+[W] AO Forecast Review 118,Polysorbate CAD,13,GS-1811,Entry In Progress,Robert.Hong2,Jonathan.Solorio,12/07/24,26/07/24
+[W] AO Forecast Review 178,Polysorbate CAD,1,GS-2872,Entry In Progress,pd.manager,Matthew.Hentz,20/06/24,11/07/24
+[W] AO Forecast Review 18,SEC-DAR,12,GS-0130,Ready to Execute,Ally.Liu,null,07/03/24,08/03/24
+[W] AO Forecast Review 18,SEC-DAR,12,GS-0130,Ready to Execute,Ally.Liu,null,09/03/24,10/03/24
+[W] AO Forecast Review 183,SEC-DAR,24,Trodelvy,Entry In Progress,Sakshi.Gautam3,ali.parva,25/07/24,07/08/24
+[W] AO Forecast Review 188,Polysorbate CAD,1,GS-0151,Ready to Execute,pd.manager,null,26/06/24,26/07/24
+[W] AO Forecast Review 201,cIEF,4,GS-4721,Ready to Execute,Sakshi.Gautam3,null,14/08/24,31/08/24
+[W] AO Forecast Review 216,Polysorbate CAD,1,GS-2872,Entry In Progress,pd.manager,Jonathan.Solorio,17/12/24,31/12/24
+[W] AO Forecast Review 226,cIEF,1,Trodelvy,Ready to Execute,Andy.Lo3,null,24/10/24,10/11/24
+[W] AO Forecast Review 243,nrCE PA800 Beckman,4,hRS7,Ready to Execute,Sakshi.Gautam3,null,25/09/24,04/10/24
+[W] AO Forecast Review 26,SEC-DAR,17,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,21/03/24,04/04/24
+[W] AO Forecast Review 274,Polysorbate CAD,1,GS-0151,Ready to Execute,null,null,08/08/24,08/08/24
+[W] AO Forecast Review 282,SEC-DAR,13,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,17/08/24,18/08/24
+[W] AO Forecast Review 282,Polysorbate CAD,13,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,17/08/24,18/08/24
+[W] AO Forecast Review 290,nrCE Maurice,24,GS-2872,Entry In Progress,pd.manager,Decker.Arevalo,02/11/24,30/11/24
+[W] AO Forecast Review 290,cIEF,24,GS-2872,Entry In Progress,pd.manager,Jonathan.Solorio,02/11/24,30/11/24
+[W] AO Forecast Review 290,rCE Maurice,24,GS-2872,Entry In Progress,pd.manager,Adrianna.Rodriguez19,02/11/24,30/11/24
+[W] AO Forecast Review 308,nrCE Maurice,12,GS-2872,Entry In Progress,pd.manager,Adrianna.Rodriguez19,02/11/24,30/11/24
+[W] AO Forecast Review 319,Polysorbate CAD,5,GS-0132,Ready to Execute,Sakshi.Gautam3,null,19/09/24,09/10/24
+[W] AO Forecast Review 329,nrCE Maurice,13,GS-1296642,Ready to Execute,null,null,03/11/24,29/11/24
+[W] AO Forecast Review 329,rCE Maurice,13,GS-1296642,Ready to Execute,null,null,03/11/24,29/11/24
+[W] AO Forecast Review 332,rCE KBI,40,hRS7,Entry In Progress,Sakshi.Gautam3,Decker.Arevalo,27/10/24,10/11/24
+[W] AO Forecast Review 332,nRCE KBI,40,hRS7,Entry In Progress,Sakshi.Gautam3,Rebecca.Pride-Magazzu,27/10/24,10/11/24
+[W] AO Forecast Review 337,cIEF,8,hRS7,Entry In Progress,Sakshi.Gautam3,Jonathan.Solorio,08/11/24,01/12/24
+[W] AO Forecast Review 337,rCE PA800 Beckman,8,hRS7,Ready to Execute,Sakshi.Gautam3,null,08/11/24,01/12/24
+[W] AO Forecast Review 337,nrCE PA800 Beckman,8,hRS7,Ready to Execute,Sakshi.Gautam3,null,08/11/24,01/12/24
+[W] AO Forecast Review 343,nrCE PA800 Beckman,10,GS-0122,Ready to Execute,Sakshi.Gautam3,null,14/11/24,01/12/24
+[W] AO Forecast Review 344,nrCE PA800 Beckman,10,GS-0154,Ready to Execute,Sakshi.Gautam3,null,14/11/24,01/12/24
+[W] AO Forecast Review 353,Polysorbate CAD,24,Trodelvy,Ready to Execute,Andy.Lo3,null,03/10/24,31/10/24
+[W] AO Forecast Review 364,rCE PA800 Beckman,35,hRS7,Ready to Execute,Sakshi.Gautam3,null,10/11/24,01/12/24
+[W] AO Forecast Review 364,nrCE PA800 Beckman,35,hRS7,Entry In Progress,Sakshi.Gautam3,Adrianna.Rodriguez19,10/11/24,01/12/24
+[W] AO Forecast Review 365,rCE PA800 Beckman,14,hRS7,Ready to Execute,Sakshi.Gautam3,null,22/11/24,06/12/24
+[W] AO Forecast Review 365,nrCE PA800 Beckman,14,hRS7,Ready to Execute,Sakshi.Gautam3,null,22/11/24,06/12/24
+[W] AO Forecast Review 368,rCE PA800 Beckman,5,hRS7,Entry In Progress,Miguel.Ledesma,Miguel.Ledesma,14/11/24,28/11/24
+[W] AO Forecast Review 372,cIEF,26,hRS7,Ready to Execute,Sakshi.Gautam3,null,21/11/24,11/12/24
+[W] AO Forecast Review 372,nrCE PA800 Beckman,26,hRS7,Ready to Execute,Sakshi.Gautam3,null,21/11/24,11/12/24
+[W] AO Forecast Review 372,rCE PA800 Beckman,26,hRS7,Ready to Execute,Sakshi.Gautam3,null,21/11/24,11/12/24
+[W] AO Forecast Review 394,cIEF,1,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,03/11/24,11/12/24
+[W] AO Forecast Review 394,rCE PA800 Beckman,1,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,03/11/24,11/12/24
+[W] AO Forecast Review 394,nrCE PA800 Beckman,1,Trodelvy,Ready to Execute,Sakshi.Gautam3,null,03/11/24,11/12/24
+[W] AO Forecast Review 395,nrCE PA800 Beckman,3,GS-8588,Ready to Execute,Sakshi.Gautam3,null,17/11/24,01/12/24
+[W] AO Forecast Review 395,cIEF,3,GS-8588,Ready to Execute,Sakshi.Gautam3,null,17/11/24,01/12/24
+[W] AO Forecast Review 415,rCE PA800 Beckman,2,GS-0130,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 415,cIEF,2,GS-0130,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 415,nrCE PA800 Beckman,2,GS-0130,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 416,cIEF,2,GS-5305,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 416,rCE PA800 Beckman,2,GS-5305,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 416,nrCE PA800 Beckman,2,GS-5305,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 417,cIEF,4,GS-4321,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 417,nrCE PA800 Beckman,4,GS-4321,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 417,rCE PA800 Beckman,4,GS-4321,Ready to Execute,Yen-Ru.Pan,null,10/11/24,08/12/24
+[W] AO Forecast Review 420,rCE Maurice,6,GS-2872,Ready to Execute,pd.manager,null,27/11/24,18/12/24
+[W] AO Forecast Review 420,nrCE Maurice,6,GS-2872,Ready to Execute,pd.manager,null,27/11/24,18/12/24
+[W] AO Forecast Review 420,cIEF,6,GS-2872,Ready to Execute,pd.manager,null,27/11/24,18/12/24
+[W] AO Forecast Review 429,nrCE PA800 Beckman,27,hRS7,Ready to Execute,Miguel.Ledesma,null,28/11/24,05/12/24
+[W] AO Forecast Review 429,cIEF,27,hRS7,Entry In Progress,Qi.Hu,Qi.Hu,28/11/24,05/12/24
+[W] AO Forecast Review 444,nRCE KBI,12,hRS7,Ready to Execute,null,null,21/11/24,05/12/24
+[W] AO Forecast Review 7,SEC-DAR,1,Trodelvy,Entry In Progress,Yen-Ru.Pan,Mansi.Maisuria,06/02/24,27/02/24
+[W] AO Forecast Review 83,Polysorbate CAD,2,GS-1811,Entry In Progress,Robert.Hong2,Matthew.Hentz,22/05/24,05/06/24
+[W] AO Forecast Review 85,cIEF,4,GS-5305,Ready to Execute,Sakshi.Gautam3,null,10/05/24,02/06/24
+[W] AO Forecast Review 86,cIEF,4,GS-1304170,Ready to Execute,Sakshi.Gautam3,null,10/05/24,02/06/24
+[W] AO Forecast Review 87,Polysorbate CAD,10,GS-1811,Entry In Progress,Robert.Hong2,Matthew.Hentz,13/04/24,27/04/24
