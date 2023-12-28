@@ -2,7 +2,7 @@ from datetime import datetime
 
 import numpy as np
 import pandas as pd
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum
+from pulp import LpVariable, LpProblem, LpMinimize, lpSum, PULP_CBC_CMD, value
 
 
 def load_data(path):
@@ -29,7 +29,7 @@ if __name__ == '__main__':
     for row in range(0, len(df_assay_to_be_scheduled)):
         unique_id.append(str(row))
 
-        start = "_start_" + str(row) + "_1" #step 1 *Tij
+        start = "_schedulestart_" + str(row) + "_1" #step 1 *Tij
         var_start = LpVariable(start, 0, None)
 
         forecast_assay_list_step1.append(var_start)
@@ -52,9 +52,9 @@ if __name__ == '__main__':
     for index in range(0, len(forecast_assay_list_step1)):
         var_start = forecast_assay_list_step1[index] #start time of step 1 of every line item (assay)
 
-        available_date = LpVariable(f'_{forecast_assay_list_step1[index]}_available_date')
+        available_date = LpVariable(f'_{forecast_assay_list_step1[index]}_available_date', lowBound=0)
 
-        pdm_scheduler += (available_date == business_days_list[index]) #object of class lpProblem. Adding constraint that available date == business date
+        pdm_scheduler += (available_date == business_days_list[index], f'_{forecast_assay_list_step1[index]}_available_date_for_each_test') #object of class lpProblem. Adding constraint that available date == business date
 
         pdm_scheduler += var_start >= available_date, f'_{forecast_assay_list_step1[index]}_cannot_start_before_avail' # last part is giving it a readable name
 
@@ -155,15 +155,16 @@ if __name__ == '__main__':
         for duration in assay_duration:
             variable_duration = LpVariable(f'_{assay_id}_duration_{step_num}', 0, None)
             variable_duration_list_for_assay.append(variable_duration)
+            pdm_scheduler += (variable_duration == duration)
 
-            day_start_y = LpVariable(f'_{assay_id}_day_start_{index}', cat='Integer')
+            day_start_y = LpVariable(f'_{assay_id}_day_start_{index}', cat='Integer', lowBound=0)
             variable_day_start_y_list.append(day_start_y)
 
-            shift_start_x = LpVariable(f'_{assay_id}_shift_start_{step_num}', cat='Integer')
+            shift_start_x = LpVariable(f'_{assay_id}_shift_start_{step_num}', cat='Integer',  lowBound=0)
             variable_shift_start_x_list.append(shift_start_x)
 
             if step_num > 1:
-                variable_start_step = LpVariable(f'_start_{assay_id}_{step_num}', 0, None)
+                variable_start_step = LpVariable(f'_schedulestart_{assay_id}_{step_num}', 0, None)
                 variable_start_step_list_for_assay.append(variable_start_step)
 
             if step_num == 1:
@@ -247,9 +248,9 @@ if __name__ == '__main__':
 
         business_day_minutes = np.busday_count(today_date, assay_due_date) * 1440
 
-        due_date = LpVariable(f'_{assay_id}_due_date')
+        due_date = LpVariable(f'_{assay_id}_due_date', lowBound=0)
 
-        pdm_scheduler += (due_date == business_day_minutes)
+        pdm_scheduler += (due_date == business_day_minutes, f'_{assay_id}_due_date_for_each_test')
 
         pdm_scheduler += (delay_in_assay == variable_end_step_list_for_assay[4] - due_date,
                           f'_{assay_id}_delay_time')
@@ -271,7 +272,14 @@ if __name__ == '__main__':
                     # 1st 2 are an LpVariable
                     pdm_scheduler += (merged_assay_duration_data.iloc[index].variable_start_step_2 >= merged_assay_duration_data.iloc[i].variable_end_step_4
                                       - M*(2 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] - merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[asset_index] + F_index_i_asset),
-                                      f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests')
+                                      f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_Before')
+
+                    pdm_scheduler += (
+                        merged_assay_duration_data.iloc[i].variable_start_step_2 >= merged_assay_duration_data.iloc[index].variable_end_step_4
+                    - M * (3 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] -
+                           merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[
+                               asset_index] - F_index_i_asset),
+                    f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_After')
 
         # end of new code ---------------------------------------
 
@@ -280,6 +288,33 @@ if __name__ == '__main__':
 
     out_dir = "data/output"
     pdm_scheduler.writeLP(f'{out_dir}/pdm-opt-{datetime.now().strftime("%s")}.lp')
+
+    solver = PULP_CBC_CMD(keepFiles=True)
+    result = pdm_scheduler.solve(solver)
+    print(result)
+
+    print("Objective = ", value(pdm_scheduler.objective))
+    general_info = pd.DataFrame(columns=['name', 'value'])
+    for v in pdm_scheduler.variables():
+        # print(v.name, "=", v.varValue)
+
+        # start_time, test
+        if "duration" in v.name:
+            print(v.name, "=", v.varValue)
+
+        # if "delay" in v.name:
+        #     # _0_delay = -51840.0
+        #     assay_id = v.name.split("_")[1]
+        #     value = v.varValue
+        # if "asset" in v.name:
+        # #     take the one that has value 1
+        # if "end" in v.name:
+        #
+        # if "schedulestart" in v.name:
+        #
+        # else:
+        #     general_info.append(v.name, v.varValue)
+
 
 
 
@@ -294,5 +329,12 @@ for loop - combination of all assays:
             variable_end_step_list_for_assay[3]
             
             M (a big number) = 1,000,000
+            
+            
+_0_day_start_0 free
+_0_due_date free
+_0_shift_start_1 free
+__start_0_1_available_date free
+  
 
 """
