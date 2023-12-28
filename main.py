@@ -74,9 +74,9 @@ if __name__ == '__main__':
     for mapping in range(0, len(merged_assay_data)):
         asset_assay_list = []
         assets_for_each_assay = []#new
-        for asset in merged_assay_data.iloc[mapping]['assetid']:
-            asset_assay_list.append("asset_ " + merged_assay_data.iloc[mapping]['ID'] + "_" + asset)
-            assets_for_each_assay.append(asset)#new
+        for asset_index in merged_assay_data.iloc[mapping]['assetid']:
+            asset_assay_list.append("asset_ " + merged_assay_data.iloc[mapping]['ID'] + "_" + asset_index)
+            assets_for_each_assay.append(asset_index)#new
         assay_list_of_compatible_assets.append(assets_for_each_assay) #new
 
         assay_asset_id.append(asset_assay_list)
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     merged_assay_duration_data["compatible_assets_binary_variable"] = assay_list_of_compatible_assets_binary_variable
     # end of new code ---------------------------------------
 
+    merged_assay_duration_data[['variable_end_step_4', 'variable_start_step_2']] = [None,None]
 
     # looping through all the assays - the final merged assay data that consists of the duration too.
     for index in range(0, len(merged_assay_duration_data)):
@@ -217,20 +218,25 @@ if __name__ == '__main__':
         pdm_scheduler += (variable_end_step_list_for_assay[4] <= 480 * (variable_shift_start_x_list[4] + 1),
                           f'{assay_id}_step5_start_time_and_end_time_is_in_same_shift')
 
-        # new code ---------------------------------------
-        # code to loop though all the assays
-        # append asset_assay_list to merged_assay_duration_data
-        M = 1000000
-        for i in range(index+1, len(merged_assay_duration_data)):
-            for asset in merged_assay_duration_data.iloc[index]['compatible_assets']:
-                if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
-                    Fijkl = LpVariable(f'_{index}_{i}_{asset}', cat='Binary')
-                    """ _asset__{index}_{asset_name}
-            """
-                    pdm_scheduler += (____.iloc[index].variable_start_step_list_for_assay[1] >= ____.iloc[i].variable_end_step_list_for_assay[3] - M*(2-merged_assay_duration_data.iloc[i].compatible_assets_binary_variable-merged_assay_duration_data.iloc[index].compatible_assets_binary_variable+Fijkl),
-                                      f'{assay_id}_same_asset_not_involved_in_two_tests')
+        # merged_assay_duration_data.iloc[index]['variable_start_step_2'] = [variable_start_step_list_for_assay[1].__str__()]
+        # merged_assay_duration_data.iloc[index]['variable_end_step_4'] = [variable_end_step_list_for_assay[3].__str__()]
+        merged_assay_duration_data.loc[index, ['variable_start_step_2']] = variable_start_step_list_for_assay[1]
+        merged_assay_duration_data.loc[index, ['variable_end_step_4']] = variable_end_step_list_for_assay[3]
 
-        # end of new code ---------------------------------------
+        # # new code ---------------------------------------
+        # # code to loop though all the assays
+        # # append asset_assay_list to merged_assay_duration_data
+        # M = 1000000
+        # for i in range(index+1, len(merged_assay_duration_data)):
+        #     for asset in merged_assay_duration_data.iloc[index]['compatible_assets']:
+        #         if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
+        #             Fijkl = LpVariable(f'_{index}_{i}_{asset}', cat='Binary')
+        #             """ _asset__{index}_{asset_name}
+        #     """
+        #             pdm_scheduler += (____.iloc[index].variable_start_step_list_for_assay[1] >= ____.iloc[i].variable_end_step_list_for_assay[3] - M*(2-merged_assay_duration_data.iloc[i].compatible_assets_binary_variable-merged_assay_duration_data.iloc[index].compatible_assets_binary_variable+Fijkl),
+        #                               f'{assay_id}_same_asset_not_involved_in_two_tests')
+        #
+        # # end of new code ---------------------------------------
 
 
         # Delay in tests
@@ -249,6 +255,25 @@ if __name__ == '__main__':
                           f'_{assay_id}_delay_time')
 
         variable_delay_assay_list.append(delay_in_assay)
+
+    for index in range(0, len(merged_assay_duration_data)-1):
+        # new code ---------------------------------------
+        # code to loop though all the assays
+        # append asset_assay_list to merged_assay_duration_data
+        M = 1000000
+        for i in range(index+1, len(merged_assay_duration_data)):
+            for asset_index in range(0, len(merged_assay_duration_data.iloc[index]['compatible_assets'])):
+                asset = merged_assay_duration_data.iloc[index]['compatible_assets'][asset_index]
+                if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
+                    F_index_i_asset = LpVariable(f'_{index}_{i}_{asset}', cat='Binary')
+                    """ _asset__{index}_{asset_name}
+            """
+                    # 1st 2 are an LpVariable
+                    pdm_scheduler += (merged_assay_duration_data.iloc[index].variable_start_step_2 >= merged_assay_duration_data.iloc[i].variable_end_step_4
+                                      - M*(2 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] - merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[asset_index] + F_index_i_asset),
+                                      f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests')
+
+        # end of new code ---------------------------------------
 
 
     pdm_scheduler += lpSum(variable_delay_assay_list), f"_total_delay" # objective function defined.
