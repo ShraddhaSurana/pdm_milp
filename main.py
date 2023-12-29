@@ -133,10 +133,8 @@ if __name__ == '__main__':
     variable_end_step_list = []
     variable_delay_assay_list = []
 
-    # new code ---------------------------------------
     merged_assay_duration_data["compatible_assets"] = assay_list_of_compatible_assets
     merged_assay_duration_data["compatible_assets_binary_variable"] = assay_list_of_compatible_assets_binary_variable
-    # end of new code ---------------------------------------
 
     merged_assay_duration_data[['variable_end_step_4', 'variable_start_step_2']] = [None, None]
 
@@ -221,25 +219,8 @@ if __name__ == '__main__':
         pdm_scheduler += (variable_end_step_list_for_assay[4] <= 480 * (variable_shift_start_x_list[4] + 1),
                           f'{assay_id}_step5_start_time_and_end_time_is_in_same_shift')
 
-        # merged_assay_duration_data.iloc[index]['variable_start_step_2'] = [variable_start_step_list_for_assay[1].__str__()]
-        # merged_assay_duration_data.iloc[index]['variable_end_step_4'] = [variable_end_step_list_for_assay[3].__str__()]
         merged_assay_duration_data.loc[index, ['variable_start_step_2']] = variable_start_step_list_for_assay[1]
         merged_assay_duration_data.loc[index, ['variable_end_step_4']] = variable_end_step_list_for_assay[3]
-
-        # # new code ---------------------------------------
-        # # code to loop though all the assays
-        # # append asset_assay_list to merged_assay_duration_data
-        # M = 1000000
-        # for i in range(index+1, len(merged_assay_duration_data)):
-        #     for asset in merged_assay_duration_data.iloc[index]['compatible_assets']:
-        #         if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
-        #             Fijkl = LpVariable(f'_{index}_{i}_{asset}', cat='Binary')
-        #             """ _asset__{index}_{asset_name}
-        #     """
-        #             pdm_scheduler += (____.iloc[index].variable_start_step_list_for_assay[1] >= ____.iloc[i].variable_end_step_list_for_assay[3] - M*(2-merged_assay_duration_data.iloc[i].compatible_assets_binary_variable-merged_assay_duration_data.iloc[index].compatible_assets_binary_variable+Fijkl),
-        #                               f'{assay_id}_same_asset_not_involved_in_two_tests')
-        #
-        # # end of new code ---------------------------------------
 
         # Delay in tests
         delay_in_assay = LpVariable(f'_{assay_id}_delay', cat='Continuous')
@@ -261,18 +242,13 @@ if __name__ == '__main__':
         print(assay_due_date)
 
     for index in range(0, len(merged_assay_duration_data) - 1):
-        # new code ---------------------------------------
-        # code to loop though all the assays
-        # append asset_assay_list to merged_assay_duration_data
         M = 1000000
         for i in range(index + 1, len(merged_assay_duration_data)):
             for asset_index in range(0, len(merged_assay_duration_data.iloc[index]['compatible_assets'])):
                 asset = merged_assay_duration_data.iloc[index]['compatible_assets'][asset_index]
                 if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
                     F_index_i_asset = LpVariable(f'_{index}_{i}_{asset}', cat='Binary')
-                    """ _asset__{index}_{asset_name}
-            """
-                    # 1st 2 are an LpVariable
+
                     pdm_scheduler += (
                     merged_assay_duration_data.iloc[index].variable_start_step_2 >= merged_assay_duration_data.iloc[
                         i].variable_end_step_4
@@ -289,14 +265,13 @@ if __name__ == '__main__':
                                    asset_index] - F_index_i_asset),
                         f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_After')
 
-        # end of new code ---------------------------------------
 
     pdm_scheduler += lpSum(variable_delay_assay_list), f"_total_delay"  # objective function defined.
 
     out_dir = "data/output"
     pdm_scheduler.writeLP(f'{out_dir}/pdm-opt-{datetime.now().strftime("%s")}.lp')
 
-    solver = PULP_CBC_CMD(keepFiles=True, timeLimit=60)
+    solver = PULP_CBC_CMD(keepFiles=True, timeLimit=120)
     result = pdm_scheduler.solve(solver)
     print(result)
 
@@ -377,7 +352,5 @@ if __name__ == '__main__':
 
     c["delay_in_days"] = c.delay/1440
     print(c)
-
-
-     # .to_csv('data/output/readable_scheduler_output.csv', index=False)
+    c.to_csv('data/output/readable_scheduler_output.csv', index=False)
 
