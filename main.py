@@ -29,14 +29,15 @@ if __name__ == '__main__':
     for row in range(0, len(df_assay_to_be_scheduled)):
         unique_id.append(str(row))
 
-        start = "_schedulestart_" + str(row) + "_1" #step 1 *Tij
+        start = "_schedulestart_" + str(row) + "_1"  # step 1 *Tij
         var_start = LpVariable(start, 0, None)
 
         forecast_assay_list_step1.append(var_start)
         available_dates.append(pd.to_datetime(df_assay_to_be_scheduled.iloc[row]['Available date']).date())
 
         # treating time available as running minutes form.
-        business_day_minutes = np.busday_count(today_date, pd.to_datetime(df_assay_to_be_scheduled.iloc[row]['Available date']).date()) * 1440
+        business_day_minutes = np.busday_count(today_date, pd.to_datetime(
+            df_assay_to_be_scheduled.iloc[row]['Available date']).date()) * 1440
 
         if business_day_minutes < 0:
             business_days_list.append(0)
@@ -50,13 +51,14 @@ if __name__ == '__main__':
 
     # looping though step 1 of all the assays
     for index in range(0, len(forecast_assay_list_step1)):
-        var_start = forecast_assay_list_step1[index] #start time of step 1 of every line item (assay)
+        var_start = forecast_assay_list_step1[index]  # start time of step 1 of every line item (assay)
 
         available_date = LpVariable(f'_{forecast_assay_list_step1[index]}_available_date', lowBound=0)
 
-        pdm_scheduler += (available_date == business_days_list[index], f'_{forecast_assay_list_step1[index]}_available_date_for_each_test') #object of class lpProblem. Adding constraint that available date == business date
+        pdm_scheduler += (available_date == business_days_list[index],
+                          f'_{forecast_assay_list_step1[index]}_available_date_for_each_test')  # object of class lpProblem. Adding constraint that available date == business date
 
-        pdm_scheduler += var_start >= available_date, f'_{forecast_assay_list_step1[index]}_cannot_start_before_avail' # last part is giving it a readable name
+        pdm_scheduler += var_start >= available_date, f'_{forecast_assay_list_step1[index]}_cannot_start_before_avail'  # last part is giving it a readable name
 
     ##################################################################################################################
     # Assay Constraints
@@ -69,28 +71,28 @@ if __name__ == '__main__':
         on="Assay",
         how="right",
     )
-    assay_list_of_compatible_assets = []#new
+    assay_list_of_compatible_assets = []  # new
     assay_asset_id = []
     for mapping in range(0, len(merged_assay_data)):
         asset_assay_list = []
-        assets_for_each_assay = []#new
+        assets_for_each_assay = []  # new
         for asset_index in merged_assay_data.iloc[mapping]['assetid']:
             asset_assay_list.append("asset_ " + merged_assay_data.iloc[mapping]['ID'] + "_" + asset_index)
-            assets_for_each_assay.append(asset_index)#new
-        assay_list_of_compatible_assets.append(assets_for_each_assay) #new
+            assets_for_each_assay.append(asset_index)  # new
+        assay_list_of_compatible_assets.append(assets_for_each_assay)  # new
 
         assay_asset_id.append(asset_assay_list)
 
     merged_assay_data['assay_asset_id'] = assay_asset_id
 
     index = 0
-    assay_list_of_compatible_assets_binary_variable = [] # new
+    assay_list_of_compatible_assets_binary_variable = []  # new
     for assay_asset_id_list in merged_assay_data['assay_asset_id']:
         assay_asset_binary_variable_list = []
         for assay_asset_id in assay_asset_id_list:
             variable = LpVariable(f'_{assay_asset_id}', cat='Binary')
             assay_asset_binary_variable_list.append(variable)
-        assay_list_of_compatible_assets_binary_variable.append(assay_asset_binary_variable_list) #new
+        assay_list_of_compatible_assets_binary_variable.append(assay_asset_binary_variable_list)  # new
 
         pdm_scheduler += lpSum(assay_asset_binary_variable_list) == 1, f"_{index}_Only one asset can be assigned"
 
@@ -136,7 +138,7 @@ if __name__ == '__main__':
     merged_assay_duration_data["compatible_assets_binary_variable"] = assay_list_of_compatible_assets_binary_variable
     # end of new code ---------------------------------------
 
-    merged_assay_duration_data[['variable_end_step_4', 'variable_start_step_2']] = [None,None]
+    merged_assay_duration_data[['variable_end_step_4', 'variable_start_step_2']] = [None, None]
 
     # looping through all the assays - the final merged assay data that consists of the duration too.
     for index in range(0, len(merged_assay_duration_data)):
@@ -155,12 +157,12 @@ if __name__ == '__main__':
         for duration in assay_duration:
             variable_duration = LpVariable(f'_{assay_id}_duration_{step_num}', 0, None)
             variable_duration_list_for_assay.append(variable_duration)
-            pdm_scheduler += (variable_duration == duration)
+            pdm_scheduler += (variable_duration == duration, f'_{assay_id}_{step_num}_dur')
 
             day_start_y = LpVariable(f'_{assay_id}_day_start_{index}', cat='Integer', lowBound=0)
             variable_day_start_y_list.append(day_start_y)
 
-            shift_start_x = LpVariable(f'_{assay_id}_shift_start_{step_num}', cat='Integer',  lowBound=0)
+            shift_start_x = LpVariable(f'_{assay_id}_shift_start_{step_num}', cat='Integer', lowBound=0)
             variable_shift_start_x_list.append(shift_start_x)
 
             if step_num > 1:
@@ -239,7 +241,6 @@ if __name__ == '__main__':
         #
         # # end of new code ---------------------------------------
 
-
         # Delay in tests
         delay_in_assay = LpVariable(f'_{assay_id}_delay', cat='Continuous')
 
@@ -257,12 +258,14 @@ if __name__ == '__main__':
 
         variable_delay_assay_list.append(delay_in_assay)
 
-    for index in range(0, len(merged_assay_duration_data)-1):
+        print(assay_due_date)
+
+    for index in range(0, len(merged_assay_duration_data) - 1):
         # new code ---------------------------------------
         # code to loop though all the assays
         # append asset_assay_list to merged_assay_duration_data
         M = 1000000
-        for i in range(index+1, len(merged_assay_duration_data)):
+        for i in range(index + 1, len(merged_assay_duration_data)):
             for asset_index in range(0, len(merged_assay_duration_data.iloc[index]['compatible_assets'])):
                 asset = merged_assay_duration_data.iloc[index]['compatible_assets'][asset_index]
                 if asset in merged_assay_duration_data.iloc[i]['compatible_assets']:
@@ -270,71 +273,111 @@ if __name__ == '__main__':
                     """ _asset__{index}_{asset_name}
             """
                     # 1st 2 are an LpVariable
-                    pdm_scheduler += (merged_assay_duration_data.iloc[index].variable_start_step_2 >= merged_assay_duration_data.iloc[i].variable_end_step_4
-                                      - M*(2 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] - merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[asset_index] + F_index_i_asset),
-                                      f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_Before')
+                    pdm_scheduler += (
+                    merged_assay_duration_data.iloc[index].variable_start_step_2 >= merged_assay_duration_data.iloc[
+                        i].variable_end_step_4
+                    - M * (2 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] -
+                           merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[
+                               asset_index] + F_index_i_asset),
+                    f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_Before')
 
                     pdm_scheduler += (
-                        merged_assay_duration_data.iloc[i].variable_start_step_2 >= merged_assay_duration_data.iloc[index].variable_end_step_4
-                    - M * (3 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] -
-                           merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[
-                               asset_index] - F_index_i_asset),
-                    f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_After')
+                        merged_assay_duration_data.iloc[i].variable_start_step_2 >= merged_assay_duration_data.iloc[
+                            index].variable_end_step_4
+                        - M * (3 - merged_assay_duration_data.iloc[i].compatible_assets_binary_variable[asset_index] -
+                               merged_assay_duration_data.iloc[index].compatible_assets_binary_variable[
+                                   asset_index] - F_index_i_asset),
+                        f'{index}_{i}_{asset}_same_asset_not_involved_in_two_tests_After')
 
         # end of new code ---------------------------------------
 
-
-    pdm_scheduler += lpSum(variable_delay_assay_list), f"_total_delay" # objective function defined.
+    pdm_scheduler += lpSum(variable_delay_assay_list), f"_total_delay"  # objective function defined.
 
     out_dir = "data/output"
     pdm_scheduler.writeLP(f'{out_dir}/pdm-opt-{datetime.now().strftime("%s")}.lp')
 
-    solver = PULP_CBC_CMD(keepFiles=True)
+    solver = PULP_CBC_CMD(keepFiles=True, timeLimit=60)
     result = pdm_scheduler.solve(solver)
     print(result)
 
     print("Objective = ", value(pdm_scheduler.objective))
-    general_info = pd.DataFrame(columns=['name', 'value'])
-    for v in pdm_scheduler.variables():
-        # print(v.name, "=", v.varValue)
+    # general_info = pd.DataFrame(columns=['name', 'value'])
+    import pickle
+    file = open('scheduler.pkl', 'wb')
+    pickle.dump(pdm_scheduler, file)
+    file.close()
+    # file = open('scheduler.pkl', 'rb')
+    # pdm_scheduler = pickle.load(file)  # prints "Deserialised"
+    # file.close()
 
-        # start_time, test
-        if "duration" in v.name:
+    delay_df = pd.DataFrame(columns=['assay_id', 'delay'])
+    asset_df = pd.DataFrame(columns=['assay_id', 'asset_name'])
+    end_df = pd.DataFrame(columns=['assay_id','step_id', 'end'])
+    start_df = pd.DataFrame(columns=['assay_id','step_id', 'start'])
+    duedate_df = pd.DataFrame(columns=['assay_id', 'duedate'])
+
+    for v in pdm_scheduler.variables():
+        if "asset" in v.name:
+            if v.value() == 1:
+                print(v.name, "=", v.varValue)
+        else:
             print(v.name, "=", v.varValue)
 
-        # if "delay" in v.name:
-        #     # _0_delay = -51840.0
-        #     assay_id = v.name.split("_")[1]
-        #     value = v.varValue
-        # if "asset" in v.name:
-        # #     take the one that has value 1
-        # if "end" in v.name:
-        #
-        # if "schedulestart" in v.name:
-        #
+        # start_time, test
+        # if "_0_" in v.name:
+        #     print(v.name, "=", v.varValue)
+
+        if "delay" in v.name:
+            # _0_delay = -51840.0
+            assay_id = v.name.split("_")[1]
+            value = v.varValue
+            delay_df = pd.concat([delay_df, pd.DataFrame({'assay_id':[assay_id], "delay":[value]})], axis=0, ignore_index=True)
+
+        if "asset" in v.name:
+            #     take the one that has value 1
+            if v.varValue == 1:
+                assay_id = v.name.split("_")[3]
+                value = v.varValue
+                asset_name = v.name.split("_")[4]
+                asset_df = pd.concat([asset_df, pd.DataFrame({'assay_id':[assay_id], "asset_name": asset_name})], axis=0, ignore_index=True)
+                # print(asset_df)
+
+
+        if "end" in v.name:
+            assay_id = v.name.split("_")[2]
+            step_id = v.name.split("_")[3]
+
+            value = v.varValue
+            end_df = pd.concat([end_df, pd.DataFrame({'assay_id':[assay_id],"step_id":step_id, "end":[value]})], axis=0, ignore_index=True)
+            # print(end_df)
+
+
+        if "schedulestart" in v.name:
+            assay_id = v.name.split("_")[2]
+            step_id = v.name.split("_")[3]
+            value = v.varValue
+            start_df = pd.concat([start_df, pd.DataFrame({'assay_id':[assay_id],"step_id":step_id, "start":[value]})], axis=0, ignore_index=True)
+
+        if "due_date" in v.name:
+            assay_id = v.name.split("_")[1]
+            value = v.varValue
+            duedate_df = pd.concat(
+                [duedate_df, pd.DataFrame({'assay_id': [assay_id], "duedate": [value]})], axis=0,
+                ignore_index=True)
+
         # else:
         #     general_info.append(v.name, v.varValue)
 
+    a = end_df.merge(start_df, on=['assay_id', 'step_id'], how='left')
+
+    b = asset_df.merge(delay_df, on=['assay_id'], how='left')
+
+    c = (b.merge(a[a.step_id=='5'], on=['assay_id'], how='left')
+     .merge(duedate_df, on=['assay_id'], how='left'))
+
+    c["delay_in_days"] = c.delay/1440
+    print(c)
 
 
+     # .to_csv('data/output/readable_scheduler_output.csv', index=False)
 
-"""
-for loop - combination of all assays:
-    if tests are sharing the same equipment:
-        for each shared equipment:
-            write the condition
-            starts at step 2 -> left side constraint 
-            ends step 4 -> right side constraint
-            
-            variable_end_step_list_for_assay[3]
-            
-            M (a big number) = 1,000,000
-            
-            
-_0_day_start_0 free
-_0_due_date free
-_0_shift_start_1 free
-__start_0_1_available_date free
-  
-
-"""
