@@ -281,6 +281,10 @@ if __name__ == '__main__':
     file = open('scheduler.pkl', 'wb')
     pickle.dump(pdm_scheduler, file)
     file.close()
+
+    ############################ Converting to readable output ########################################################
+    #  -------------------- Unpickle so that the optimiser doesn't need to run again --------------------
+
     # file = open('scheduler.pkl', 'rb')
     # pdm_scheduler = pickle.load(file)  # prints "Deserialised"
     # file.close()
